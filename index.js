@@ -32,42 +32,42 @@ function setGameMode(selectedValue) {
 // key in the input box labeled `enter coordinates`
 // paramerter: input - the content of the input box
 function processHumanCoordinate(input) {
-  console.log(`'processHumanCoordinate('${input}')`);
-  if (gameTurn % 2 === 0) {
-    currentPlayer = "diamond";
-  } else {
-    currentPlayer = "pets";
-  }
+    console.log(`'processHumanCoordinate('${input}')`);
+    if (gameTurn % 2 === 0) {
+        currentPlayer = "diamond";
+    } else {
+        currentPlayer = "pets";
+    }
 
-  let coordinates = extractCoordinates(input);
-
-  if(board[coordinates.x][coordinates.y] !== ""){
-    displayMessage("Position is already taken on board");
-}   
-
-    board[coordinates.x][coordinates.y] = currentPlayer;
+    let coordinates = extractCoordinates(input);
 
     gameTurn += 1;
 
-    displayBoard(board);
-
     if(coordinates.x >= 0 && coordinates.x <=2 && coordinates.y >= 0 && coordinates.y <=2){
 
-        if(currentPlayer === "diamond"){
-            displayMessage(`Player pets' turn`);
-        } else if(currentPlayer === "pets"){
-            displayMessage(`Player diamond's turn`);
-        }
+        if(board[coordinates.x][coordinates.y] !== ""){
+            displayMessage("Position is already taken on board");
+        } else {
+            
+            board[coordinates.x][coordinates.y] = currentPlayer;
+            displayBoard(board);
 
+            const winningPlayer = getWinningPlayer(board);
+            if (winningPlayer) {
+                displayMessage(`Player ${currentPlayer} has won !`);
+            } else if (gameTurn === 9) {
+                displayMessage(`It's a tie`);
+            } else {
+
+                if(currentPlayer === "diamond"){
+                    displayMessage(`Player pets' turn`);
+                } else if(currentPlayer === "pets"){
+                    displayMessage(`Player diamond's turn`);
+                }
+            }
+        }
     } else {
         displayMessage("Invalid coordinate entered");
-    }
-
-    const winningPlayer = getWinningPlayer(board);
-    if (winningPlayer) {
-        displayMessage(`Player ${currentPlayer} has won !`);
-    } else if (gameTurn === 9) {
-        displayMessage(`It's a tie`);
     }
 
     // TODO: add conditions to hide the coordinates screen for 
