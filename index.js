@@ -14,10 +14,6 @@ function setGameMode(selectedValue) {
       isPlayerXHuman = true;
       isPlayerYHuman = false;
       break;
-    case "":
-      isPlayerXHuman = false;
-      isPlayerYHuman = false;
-      break;
   }
   resetBoard();
 
