@@ -9,18 +9,22 @@ function setGameMode(selectedValue) {
     case "human-human":
       isPlayerXHuman = true;
       isPlayerYHuman = true;
+      setHTMLvisibilityForInputGameMode(false);
+      setHTMLvisibilityForInputHumanCoordinates(true);
+      setHTMLvisibilityForInputAiCoordinatesInput(false);
+      setHTMLvisibilityForButtonLabeledReset(true);
       break;
     case "human-ai":
       isPlayerXHuman = true;
       isPlayerYHuman = false;
+      setHTMLvisibilityForInputGameMode(false);
+      setHTMLvisibilityForInputHumanCoordinates(true);
+      setHTMLvisibilityForInputAiCoordinatesInput(true);
+      setHTMLvisibilityForButtonLabeledReset(true);
       break;
   }
   resetBoard();
 
-  setHTMLvisibilityForInputGameMode(false);
-  setHTMLvisibilityForInputHumanCoordinates(true);
-  setHTMLvisibilityForInputAiCoordinatesInput(false);
-  setHTMLvisibilityForButtonLabeledReset(true);
   displayMessage("Player X's turn");
 }
 
@@ -61,6 +65,8 @@ function processHumanCoordinate(input) {
 // this function is called whenever the user presses
 // the button labeled `Generate AI coordinates`
 function processAICoordinate() {
+  board[0][0] = 'pets'
+  displayBoard(board)
   console.log(`processAICoordinate()`);
 }
 
