@@ -41,41 +41,19 @@ function processHumanCoordinate(input) {
 
     let coordinates = extractCoordinates(input);
 
-    if(coordinates.x >= 0 && coordinates.x <=2 && coordinates.y >= 0 && coordinates.y <=2){
-
-        if(board[coordinates.x][coordinates.y] !== ""){
-            displayMessage("Position is already taken on board");
-        } else {
-            
-            board[coordinates.x][coordinates.y] = currentPlayer;
-            displayBoard(board);
-            gameTurn += 1;
-
-            const winningPlayer = getWinningPlayer(board);
-            if (winningPlayer) {
-                displayMessage(`Player ${currentPlayer} has won !`);
-            } else if (gameTurn === 9) {
-                displayMessage(`It's a tie`);
-            } else {
-
-                if(currentPlayer === "diamond"){
-                    displayMessage(`Player pets' turn`);
-                } else if(currentPlayer === "pets"){
-                    displayMessage(`Player diamond's turn`);
-                }
-            }
-        }
-    } else {
-        displayMessage("Invalid coordinate entered");
+    if(coordinates.x < 0 || coordinates.x > 2 && coordinates.y < 0 && coordinates.y > 2){
+      displayMessage("Invalid coordinate entered");
     }
-
+    else if(board[coordinates.x][coordinates.y] !== ""){
+      displayMessage("Position is already taken on board");
+    } 
+    else {
+      handleMove(coordinates, currentPlayer)
+    }
     if(!isPlayerYHuman){
       setHTMLvisibilityForInputHumanCoordinates(false);
       setHTMLvisibilityForInputAiCoordinatesInput(true);
     }
-    // TODO: add conditions to hide the coordinates screen for 
-    // the human player & show for the button to generate AI 
-    // coordinates
 }
 
 // this function is called whenever the user presses
@@ -103,6 +81,25 @@ function processAICoordinate() {
   displayBoard(board);
   setHTMLvisibilityForInputHumanCoordinates(true);
   setHTMLvisibilityForInputAiCoordinatesInput(false);
+}
+
+function handleMove(coordinates, currentPlayer){
+  board[coordinates.x][coordinates.y] = currentPlayer;
+  displayBoard(board);
+  gameTurn += 1;
+
+  const winningPlayer = getWinningPlayer(board);
+  if (winningPlayer) {
+      displayMessage(`Player ${currentPlayer} has won !`);
+  } else if (gameTurn === 9) {
+      displayMessage(`It's a tie`);
+  } else {
+      if(currentPlayer === "diamond"){
+          displayMessage(`Player pets' turn`);
+      } else if(currentPlayer === "pets"){
+          displayMessage(`Player diamond's turn`);
+      }
+  } 
 }
 
 // this function is called when the user clicks on
