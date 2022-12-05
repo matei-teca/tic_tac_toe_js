@@ -36,33 +36,34 @@ function processHumanCoordinate(input) {
   }
 
   let coordinates = extractCoordinates(input);
-  board[coordinates.x][coordinates.y] = currentPlayer;
+
+  if(board[coordinates.x][coordinates.y] !== ""){
+    displayMessage("Position is already taken on board");
+}   
+
+    board[coordinates.x][coordinates.y] = currentPlayer;
 
     gameTurn += 1;
+
     displayBoard(board);
 
-  // TODO: add a message stating either
-  // Player X's turn
-  // Player O's turn
-  // It's a tie
-  // Player X won
-  // Player O won
+    if(coordinates.x >= 0 && coordinates.x <=2 && coordinates.y >= 0 && coordinates.y <=2){
 
-    displayMessage(`Player ${currentPlayer}'s turn`);
+        if(currentPlayer === "diamond"){
+            displayMessage(`Player pets' turn`);
+        } else if(currentPlayer === "pets"){
+            displayMessage(`Player diamond's turn`);
+        }
+
+    } else {
+        displayMessage("Invalid coordinate entered");
+    }
 
     const winningPlayer = getWinningPlayer(board);
     if (winningPlayer) {
         displayMessage(`Player ${currentPlayer} has won !`);
-    } else if (winningPlayer === undefined && gameTurn === 9) {
+    } else if (gameTurn === 9) {
         displayMessage(`It's a tie`);
-    }
-
-    if(!coordinates){
-        displayMessage("Invalid coordinate entered");
-    }
-
-    if(board[coordinates.x][coordinates.y] !== ""){
-        displayMessage("Position is already taken on board");
     }
 
     // TODO: add conditions to hide the coordinates screen for 
