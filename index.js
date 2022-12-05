@@ -19,7 +19,7 @@ function setGameMode(selectedValue) {
       isPlayerYHuman = false;
       setHTMLvisibilityForInputGameMode(false);
       setHTMLvisibilityForInputHumanCoordinates(true);
-      setHTMLvisibilityForInputAiCoordinatesInput(true);
+      setHTMLvisibilityForInputAiCoordinatesInput(false);
       setHTMLvisibilityForButtonLabeledReset(true);
       break;
   }
@@ -70,6 +70,10 @@ function processHumanCoordinate(input) {
         displayMessage("Invalid coordinate entered");
     }
 
+    if(!isPlayerYHuman){
+      setHTMLvisibilityForInputHumanCoordinates(false);
+      setHTMLvisibilityForInputAiCoordinatesInput(true);
+    }
     // TODO: add conditions to hide the coordinates screen for 
     // the human player & show for the button to generate AI 
     // coordinates
@@ -98,6 +102,8 @@ function processAICoordinate() {
   }
   gameTurn++;
   displayBoard(board);
+  setHTMLvisibilityForInputHumanCoordinates(true);
+  setHTMLvisibilityForInputAiCoordinatesInput(false);
 }
 
 // this function is called when the user clicks on
