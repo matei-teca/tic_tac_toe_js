@@ -38,11 +38,6 @@ function processHumanCoordinate(input) {
     let coordinates = extractCoordinates(input);
     board[coordinates.x][coordinates.y] = currentPlayer;
 
-    const winningPlayer = getWinningPlayer(board);
-    if (winningPlayer) {
-        displayMessage(`Player ${currentPlayer} has won !`);
-    }
-
     gameTurn += 1;
     displayBoard(board);
 
@@ -52,6 +47,23 @@ function processHumanCoordinate(input) {
     // It's a tie
     // Player X won 
     // Player O won 
+
+    displayMessage(`Player ${currentPlayer}'s turn`);
+
+    const winningPlayer = getWinningPlayer(board);
+    if (winningPlayer) {
+        displayMessage(`Player ${currentPlayer} has won !`);
+    } else if (winningPlayer === undefined && gameTurn === 9) {
+        displayMessage(`It's a tie`);
+    }
+
+    if(!coordinates){
+        displayMessage("Invalid coordinate entered");
+    }
+
+    if(board[coordinates.x][coordinates.y] !== ""){
+        displayMessage("Position is already taken on board");
+    }
 
     // TODO: add conditions to hide the coordinates screen for 
     // the human player & show for the button to generate AI 
