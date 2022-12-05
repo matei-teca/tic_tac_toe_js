@@ -41,8 +41,6 @@ function processHumanCoordinate(input) {
 
     let coordinates = extractCoordinates(input);
 
-    gameTurn += 1;
-
     if(coordinates.x >= 0 && coordinates.x <=2 && coordinates.y >= 0 && coordinates.y <=2){
 
         if(board[coordinates.x][coordinates.y] !== ""){
@@ -51,6 +49,7 @@ function processHumanCoordinate(input) {
             
             board[coordinates.x][coordinates.y] = currentPlayer;
             displayBoard(board);
+            gameTurn += 1;
 
             const winningPlayer = getWinningPlayer(board);
             if (winningPlayer) {
