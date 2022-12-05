@@ -14,6 +14,10 @@ function setGameMode(selectedValue) {
       isPlayerXHuman = true;
       isPlayerYHuman = false;
       break;
+    case "":
+      isPlayerXHuman = false;
+      isPlayerYHuman = false;
+      break;
   }
   resetBoard();
 
@@ -67,10 +71,12 @@ function processAICoordinate() {
 // this function is called when the user clicks on
 // the button labeled `Restart Game`
 function resetGame() {
-  for (let i = 0; i <= 2; i++)
-    for (let j = 0; j <= 2; j++) {
-      board[i][j] = "";
-    }
+  resetBoard();
+  setHTMLvisibilityForInputGameMode(true);
+  setHTMLvisibilityForInputHumanCoordinates(false);
+  setHTMLvisibilityForInputAiCoordinatesInput(false);
+  setHTMLvisibilityForButtonLabeledReset(false);
+  gameTurn = 0;
   displayBoard(board);
   console.log(`resetGame()`);
 }
@@ -78,13 +84,13 @@ function resetGame() {
 // this function should change from A1..C3 to coordinates
 // that are present in the `board` global variable
 function extractCoordinates(input) {
-    // this is a sample of what should be returned if the
-    // the user had typed `A1`
-    // you need to add the to also treat other cases (A2..C3)
-    let legend = {A: 0, B: 1, C: 2}
-    let x = legend[input[0]]
-    let y = Number(input[1]) - 1
-    return { x, y};
+  // this is a sample of what should be returned if the
+  // the user had typed `A1`
+  // you need to add the to also treat other cases (A2..C3)
+  let legend = { A: 0, B: 1, C: 2 };
+  let x = legend[input[0]];
+  let y = Number(input[1]) - 1;
+  return { x, y };
 }
 
 // this function should return `X` or `O` or undefined (carefull it's not a string )
