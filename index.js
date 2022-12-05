@@ -76,7 +76,10 @@ function extractCoordinates(input) {
     // this is a sample of what should be returned if the
     // the user had typed `A1`
     // you need to add the to also treat other cases (A2..C3)
-    return { x: 0, y: 0};
+    let legend = {A: 0, B: 1, C: 2}
+    let x = legend[input[0]]
+    let y = Number(input[1]) - 1
+    return { x, y};
 }
 
 // this function should return `X` or `O` or undefined (carefull it's not a string )
