@@ -67,10 +67,12 @@ function processAICoordinate() {
 // this function is called when the user clicks on
 // the button labeled `Restart Game`
 function resetGame() {
-  for (let i = 0; i <= 2; i++)
-    for (let j = 0; j <= 2; j++) {
-      board[i][j] = "";
-    }
+  resetBoard();
+  setHTMLvisibilityForInputGameMode(true);
+  setHTMLvisibilityForInputHumanCoordinates(false);
+  setHTMLvisibilityForInputAiCoordinatesInput(false);
+  setHTMLvisibilityForButtonLabeledReset(false);
+  gameTurn = 0;
   displayBoard(board);
   console.log(`resetGame()`);
 }
@@ -78,6 +80,7 @@ function resetGame() {
 // this function should change from A1..C3 to coordinates
 // that are present in the `board` global variable
 function extractCoordinates(input) {
+
     // this is a sample of what should be returned if the
     // the user had typed `A1`
     // you need to add the to also treat other cases (A2..C3)
