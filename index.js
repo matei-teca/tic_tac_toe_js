@@ -65,9 +65,26 @@ function processHumanCoordinate(input) {
 // this function is called whenever the user presses
 // the button labeled `Generate AI coordinates`
 function processAICoordinate() {
-  board[0][0] = 'pets'
-  displayBoard(board)
-  console.log(`processAICoordinate()`);
+  if (gameTurn % 2 === 0) {
+    currentPlayer = "diamond";
+  } else {
+    currentPlayer = "pets";
+    let ok = 0;
+    for (let i = 0; i < 3; i++) {
+      for (let j = 0; j < 3; j++) {
+        if (board[i][j] == "") {
+          board[i][j] = "pets";
+          ok = 1;
+          break;
+        }
+      }
+      if (ok == 1) {
+        break;
+      }
+    }
+  }
+  gameTurn++;
+  displayBoard(board);
 }
 
 // this function is called when the user clicks on
