@@ -32,34 +32,47 @@ function setGameMode(selectedValue) {
 // key in the input box labeled `enter coordinates`
 // paramerter: input - the content of the input box
 function processHumanCoordinate(input) {
-  console.log(`'processHumanCoordinate('${input}')`);
-  if (gameTurn % 2 === 0) {
-    currentPlayer = "diamond";
-  } else {
-    currentPlayer = "pets";
-  }
+    console.log(`'processHumanCoordinate('${input}')`);
+    if (gameTurn % 2 === 0) {
+        currentPlayer = "diamond";
+    } else {
+        currentPlayer = "pets";
+    }
 
-  let coordinates = extractCoordinates(input);
-  board[coordinates.x][coordinates.y] = currentPlayer;
+    let coordinates = extractCoordinates(input);
 
-  const winningPlayer = getWinningPlayer(board);
-  if (winningPlayer) {
-    displayMessage(`Player ${currentPlayer} has won !`);
-  }
+    gameTurn += 1;
 
-  gameTurn += 1;
-  displayBoard(board);
+    if(coordinates.x >= 0 && coordinates.x <=2 && coordinates.y >= 0 && coordinates.y <=2){
 
-  // TODO: add a message stating either
-  // Player X's turn
-  // Player O's turn
-  // It's a tie
-  // Player X won
-  // Player O won
+        if(board[coordinates.x][coordinates.y] !== ""){
+            displayMessage("Position is already taken on board");
+        } else {
+            
+            board[coordinates.x][coordinates.y] = currentPlayer;
+            displayBoard(board);
 
-  // TODO: add conditions to hide the coordinates screen for
-  // the human player & show for the button to generate AI
-  // coordinates
+            const winningPlayer = getWinningPlayer(board);
+            if (winningPlayer) {
+                displayMessage(`Player ${currentPlayer} has won !`);
+            } else if (gameTurn === 9) {
+                displayMessage(`It's a tie`);
+            } else {
+
+                if(currentPlayer === "diamond"){
+                    displayMessage(`Player pets' turn`);
+                } else if(currentPlayer === "pets"){
+                    displayMessage(`Player diamond's turn`);
+                }
+            }
+        }
+    } else {
+        displayMessage("Invalid coordinate entered");
+    }
+
+    // TODO: add conditions to hide the coordinates screen for 
+    // the human player & show for the button to generate AI 
+    // coordinates
 }
 
 // this function is called whenever the user presses
