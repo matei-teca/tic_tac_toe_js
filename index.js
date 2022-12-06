@@ -112,13 +112,7 @@ function handleMove(coordinates, currentPlayer){
 // this function is called when the user clicks on
 // the button labeled `Restart Game`
 function resetGame() {
-  resetBoard();
-  setHTMLvisibilityForInputGameMode(true);
-  setHTMLvisibilityForInputHumanCoordinates(false);
-  setHTMLvisibilityForInputAiCoordinatesInput(false);
-  setHTMLvisibilityForButtonLabeledReset(false);
-  gameTurn = 0;
-  displayBoard(board);
+  location.reload()
   console.log(`resetGame()`);
 }
 
