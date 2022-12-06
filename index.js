@@ -93,11 +93,69 @@ function processAICoordinate() {
 }
 
 // Trivial strategy. AI fills the first free cell.
+let checkThese1=[]
+for(let i = 0; i <= 2; ++i){
+  let row = []
+  let col = []
+  for(let j = 0; j <= 2; ++j){
+      row.push([i, j])
+      col.push([j, i])
+  }
+  checkThese1.push(row)
+  checkThese1.push(col)
+}
+checkThese1.push([[0,0], [1,1], [2,2]])
+checkThese1.push([[0,2], [1,1], [2,0]])
+
 function basicAI(){
-  for (let i = 0; i < 3; i++)
-    for (let j = 0; j < 3; j++)
-      if (board[i][j] == "")
-        return {x: i, y: j}
+
+  // if AI can win
+for(line of checkThese1){
+  if(board[line[0][0]][line[0][1]]==board[line[1][0]][line[1][1]] && board[line[1][0]][line[1][1]]=="pets" && board[line[2][0]][line[2][1]]==""){
+    return {x:line[2][0],y:line[2][1]}
+  }else if(board[line[0][0]][line[0][1]]==board[line[2][0]][line[2][1]] && board[line[2][0]][line[2][1]]=="pets" && board[line[1][0]][line[1][1]]==""){
+    return {x:line[1][0],y:line[1][1]}
+  }else if(board[line[1][0]][line[0][1]]==board[line[2][0]][line[2][1]] && board[line[2][0]][line[2][1]]=="pets" && board[line[0][0]][line[0][1]]==""){
+    return {x:line[0][0],y:line[0][1]}
+  }
+
+}
+//if human is about to win
+for(line of checkThese1){
+  if(board[line[0][0]][line[0][1]]==board[line[1][0]][line[1][1]] && board[line[1][0]][line[1][1]]=="diamond" && board[line[2][0]][line[2][1]]==""){
+    return {x:line[2][0],y:line[2][1]}
+  }else if(board[line[0][0]][line[0][1]]==board[line[2][0]][line[2][1]] && board[line[2][0]][line[2][1]]=="diamond" && board[line[1][0]][line[1][1]]==""){
+    return {x:line[1][0],y:line[1][1]}
+  }else if(board[line[1][0]][line[0][1]]==board[line[2][0]][line[2][1]] && board[line[2][0]][line[2][1]]=="diamond" && board[line[0][0]][line[0][1]]==""){
+    return {x:line[0][0],y:line[0][1]}
+  }
+}
+// prioritize the centre
+if(board[1][1]==""){ 
+  return{x:1,y:1}
+}
+
+// if(gameTurn==3 && board[1][1]=="pets"){
+// if(board[0][1]=="")  return{x:0,y:1}
+// else if(board[1][0]=="")  return{x:1,y:0}
+// else if(board[2][1]=="")  return{x:2,y:1}
+// else if(board[1][2]=="")  return{x:1,y:2}
+//}
+
+// if centre is taken AI goes for corners
+if(board[0][0]=="")
+return{x:0,y:0}
+if(board[0][2]=="")
+return{x:0,y:2}
+if(board[2][0]=="")
+return{x:2,y:0}
+if(board[2][2]=="")
+return{x:2,y:2}
+// Otherwise goes for the left empty tile
+for (let i = 0; i < 3; i++)
+  for (let j = 0; j < 3; j++)
+    if (board[i][j] == "")
+      return {x: i, y: j}
 }
 
 function handleMove(coordinates, currentPlayer){
@@ -144,7 +202,7 @@ function extractCoordinates(input) {
 // this function should return `X` or `O` or undefined (carefull it's not a string )
 // based on interpreting the values in the board variable
 function getWinningPlayer(board) {
-    let checkThese = []
+  let checkThese = []
 
     for(let i = 0; i <= 2; ++i){
         let row = []
@@ -167,7 +225,6 @@ function getWinningPlayer(board) {
 
     return undefined
 }
-
 //returns the winner of a length 3 array of coordinates, and returns undefined if no winner exists
 function rowWinner(line){
     line = line.map(cell => board[cell[0]][cell[1]])
