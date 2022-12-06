@@ -2,7 +2,7 @@ let gameTurn = 0;
 let currentPlayer;
 let board;
 let gameOver = false;
-
+let Aimode=0
 // this function will be called whenever the user changes
 // the `select` input labeled `please select game mode`
 function setGameMode(selectedValue) {
@@ -22,6 +22,15 @@ function setGameMode(selectedValue) {
       setHTMLvisibilityForInputHumanCoordinates(true);
       setHTMLvisibilityForInputAiCoordinatesInput(false);
       setHTMLvisibilityForButtonLabeledReset(true);
+      break;
+    case "ai-ai":
+      isPlayerXHuman = false;
+      isPlayerYHuman = false;
+      setHTMLvisibilityForInputGameMode(false);
+      setHTMLvisibilityForInputHumanCoordinates(false);
+      setHTMLvisibilityForInputAiCoordinatesInput(true);
+      setHTMLvisibilityForButtonLabeledReset(true);
+      Aimode=1
       break;
   }
   resetBoard();
@@ -70,9 +79,14 @@ function processAICoordinate() {
     currentPlayer = "pets";
   }
 
-  if(currentPlayer == "pets"){
-    let coordinates = basicAI()
-
+  if(currentPlayer == "pets"|| currentPlayer=="diamond"){
+    let coordinates
+    if(gameTurn==0 && Aimode==1){
+      coordinates={x:Math.floor(Math.random()*3), y:Math.floor(Math.random()*3)}
+    }
+    else{
+      coordinates= basicAI()
+    }
     if(coordinates.x < 0 || coordinates.x > 2 || coordinates.y < 0 || coordinates.y > 2){
       displayMessage("Invalid coordinate entered");
     }
@@ -83,9 +97,11 @@ function processAICoordinate() {
       handleMove(coordinates, currentPlayer)
     }
   }
-
+  
+if(Aimode==0){
   setHTMLvisibilityForInputHumanCoordinates(true);
   setHTMLvisibilityForInputAiCoordinatesInput(false);
+}
   if(gameOver){
     setHTMLvisibilityForInputHumanCoordinates(false);
     setHTMLvisibilityForInputAiCoordinatesInput(false);
@@ -110,7 +126,8 @@ checkThese1.push([[0,2], [1,1], [2,0]])
 function basicAI(){
 
   // if AI can win
-for(line of checkThese1){
+if(gameTurn%2==0)
+{for(line of checkThese1){
   if(board[line[0][0]][line[0][1]]==board[line[1][0]][line[1][1]] && board[line[1][0]][line[1][1]]=="pets" && board[line[2][0]][line[2][1]]==""){
     return {x:line[2][0],y:line[2][1]}
   }else if(board[line[0][0]][line[0][1]]==board[line[2][0]][line[2][1]] && board[line[2][0]][line[2][1]]=="pets" && board[line[1][0]][line[1][1]]==""){
@@ -128,6 +145,28 @@ for(line of checkThese1){
     return {x:line[1][0],y:line[1][1]}
   }else if(board[line[1][0]][line[0][1]]==board[line[2][0]][line[2][1]] && board[line[2][0]][line[2][1]]=="diamond" && board[line[0][0]][line[0][1]]==""){
     return {x:line[0][0],y:line[0][1]}
+  }
+}
+}
+else{
+  for(line of checkThese1){
+    if(board[line[0][0]][line[0][1]]==board[line[1][0]][line[1][1]] && board[line[1][0]][line[1][1]]=="diamond" && board[line[2][0]][line[2][1]]==""){
+      return {x:line[2][0],y:line[2][1]}
+    }else if(board[line[0][0]][line[0][1]]==board[line[2][0]][line[2][1]] && board[line[2][0]][line[2][1]]=="diamond" && board[line[1][0]][line[1][1]]==""){
+      return {x:line[1][0],y:line[1][1]}
+    }else if(board[line[1][0]][line[0][1]]==board[line[2][0]][line[2][1]] && board[line[2][0]][line[2][1]]=="diamond" && board[line[0][0]][line[0][1]]==""){
+      return {x:line[0][0],y:line[0][1]}
+    }
+  }
+  for(line of checkThese1){
+    if(board[line[0][0]][line[0][1]]==board[line[1][0]][line[1][1]] && board[line[1][0]][line[1][1]]=="pets" && board[line[2][0]][line[2][1]]==""){
+      return {x:line[2][0],y:line[2][1]}
+    }else if(board[line[0][0]][line[0][1]]==board[line[2][0]][line[2][1]] && board[line[2][0]][line[2][1]]=="pets" && board[line[1][0]][line[1][1]]==""){
+      return {x:line[1][0],y:line[1][1]}
+    }else if(board[line[1][0]][line[0][1]]==board[line[2][0]][line[2][1]] && board[line[2][0]][line[2][1]]=="pets" && board[line[0][0]][line[0][1]]==""){
+      return {x:line[0][0],y:line[0][1]}
+    }
+  
   }
 }
 // prioritize the centre
