@@ -83,6 +83,7 @@ function processAICoordinate() {
   setHTMLvisibilityForInputAiCoordinatesInput(false);
 }
 
+// Trivial strategy. AI fills the first free cell.
 function basicAI(){
   for (let i = 0; i < 3; i++)
     for (let j = 0; j < 3; j++)
@@ -124,7 +125,7 @@ function extractCoordinates(input) {
     // the user had typed `A1`
     // you need to add the to also treat other cases (A2..C3)
     let legend = {A: 0, B: 1, C: 2}
-    let x = legend[input[0]]
+    let x = legend[input[0].toUpperCase()]
     let y = Number(input[1]) - 1
     return {x, y};
 }
