@@ -174,12 +174,12 @@ if(board[1][1]==""){
   return{x:1,y:1}
 }
 
-// if(gameTurn==3 && board[1][1]=="pets"){
-// if(board[0][1]=="")  return{x:0,y:1}
-// else if(board[1][0]=="")  return{x:1,y:0}
-// else if(board[2][1]=="")  return{x:2,y:1}
-// else if(board[1][2]=="")  return{x:1,y:2}
-//}
+if(gameTurn==3 && board[1][1]=="pets"){
+if(board[0][1]=="")  return{x:0,y:1}
+else if(board[1][0]=="")  return{x:1,y:0}
+else if(board[2][1]=="")  return{x:2,y:1}
+else if(board[1][2]=="")  return{x:1,y:2}
+}
 
 // if centre is taken AI goes for corners
 if(board[0][0]=="")
