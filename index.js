@@ -41,7 +41,7 @@ function processHumanCoordinate(input) {
 
     let coordinates = extractCoordinates(input);
 
-    if(coordinates.x < 0 || coordinates.x > 2 && coordinates.y < 0 && coordinates.y > 2){
+    if(coordinates.x < 0 || coordinates.x > 2 || coordinates.y < 0 || coordinates.y > 2){
       displayMessage("Invalid coordinate entered");
     }
     else if(board[coordinates.x][coordinates.y] !== ""){
@@ -63,24 +63,31 @@ function processAICoordinate() {
     currentPlayer = "diamond";
   } else {
     currentPlayer = "pets";
-    let ok = 0;
-    for (let i = 0; i < 3; i++) {
-      for (let j = 0; j < 3; j++) {
-        if (board[i][j] == "") {
-          board[i][j] = "pets";
-          ok = 1;
-          break;
-        }
-      }
-      if (ok == 1) {
-        break;
-      }
+  }
+
+  if(currentPlayer == "pets"){
+    let coordinates = basicAI()
+
+    if(coordinates.x < 0 || coordinates.x > 2 || coordinates.y < 0 || coordinates.y > 2){
+      displayMessage("Invalid coordinate entered");
+    }
+    else if(board[coordinates.x][coordinates.y] !== ""){
+      displayMessage("Position is already taken on board");
+    } 
+    else {
+      handleMove(coordinates, currentPlayer)
     }
   }
-  gameTurn++;
-  displayBoard(board);
+
   setHTMLvisibilityForInputHumanCoordinates(true);
   setHTMLvisibilityForInputAiCoordinatesInput(false);
+}
+
+function basicAI(){
+  for (let i = 0; i < 3; i++)
+    for (let j = 0; j < 3; j++)
+      if (board[i][j] == "")
+        return {x: i, y: j}
 }
 
 function handleMove(coordinates, currentPlayer){
