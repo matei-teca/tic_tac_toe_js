@@ -1,6 +1,7 @@
 let gameTurn = 0;
 let currentPlayer;
 let board;
+let gameOver = false;
 
 // this function will be called whenever the user changes
 // the `select` input labeled `please select game mode`
@@ -54,6 +55,10 @@ function processHumanCoordinate(input) {
       setHTMLvisibilityForInputHumanCoordinates(false);
       setHTMLvisibilityForInputAiCoordinatesInput(true);
     }
+    if(gameOver){
+      setHTMLvisibilityForInputHumanCoordinates(false);
+      setHTMLvisibilityForInputAiCoordinatesInput(false);
+    }
 }
 
 // this function is called whenever the user presses
@@ -81,6 +86,10 @@ function processAICoordinate() {
 
   setHTMLvisibilityForInputHumanCoordinates(true);
   setHTMLvisibilityForInputAiCoordinatesInput(false);
+  if(gameOver){
+    setHTMLvisibilityForInputHumanCoordinates(false);
+    setHTMLvisibilityForInputAiCoordinatesInput(false);
+  }
 }
 
 // Trivial strategy. AI fills the first free cell.
@@ -99,8 +108,10 @@ function handleMove(coordinates, currentPlayer){
   const winningPlayer = getWinningPlayer(board);
   if (winningPlayer) {
       displayMessage(`Player ${currentPlayer} has won !`);
+      gameOver = true;
   } else if (gameTurn === 9) {
       displayMessage(`It's a tie`);
+      gameOver = true;
   } else {
       if(currentPlayer === "diamond"){
           displayMessage(`Player pets' turn`);
