@@ -191,45 +191,25 @@ function cloneBoard(state){
 let win=0
 let a=3,b=3
 let d=1
-function winMove(state,current,opposite,root,turn)
-{ let isd=false
+function winMove(state,current,opposite,root)
+{ let rezults=[]
   
   for (let i = 0; i < 3; i++)
   for (let j = 0; j < 3; j++){
     if(state[i][j]===''){
-      if(root==0 && isd== false){
-        a=i;b=j;
-      }
       clone=cloneBoard(state)
-      console.log(clone);
       clone[i][j]=current
       const winningPlayer = getWinningPlayer(clone);
       if(winningPlayer==current){
-        if(turn){
-          return {x:i,y:j}
-        } else {
-          if(root==1){
-            d=0
-            return {x:i,y:j}
-          } 
-          return undefined
-        }
+      rezults.push([{x:i,y:j},"w"])
       }
-      else if(winningPlayer==undefined){
-        next=winMove(clone,opposite,current,root+1,!turn)
-        if(d==0) return next
-        if(next!=undefined){
-          return {x:i,y:j}
-        } 
-        else if(root>0){
-          return undefined
-        }
+      else {
+        rezults.push(winMove(clone,opposite,current,root+1))
       }
-    
     }
-    isd=true
   }
-  if(root==0) return{x:a,y:b}
+  for(let rez of rezults)
+
  return undefined
 }
 
