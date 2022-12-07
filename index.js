@@ -99,39 +99,48 @@ function basicAI(currentPlayer){
   return treeSearchAI(board, currentPlayer, 0)
 }
 
-//returns [the best move, outcome for current player] as a 2-array
+//input: state - a board configuration
+//       currentPlayer - the player to move
+//   
+//output: returns [the best move, if relevant, outcome for current player] as a 2-array
 function treeSearchAI(state, currentPlayer, depth){
   let winningPlayer = getWinningPlayer(state);
-  if (winningPlayer) {
+  // a winner was found
+  if (winningPlayer != undefined) { 
     winningPlayer = (winningPlayer == 'X' ? 'diamond' : 'pets')
-    return [undefined, winningPlayer == currentPlayer ? 'w' : 'l']
+    return [undefined, winningPlayer == currentPlayer ? 'w' : 'l'] 
   }
 
+  // if there is no winner and no moves, it is a draw
   let moves = legalMoves(state)
-  if(moves.length == 0){
+  if(moves.length == 0){ 
     return [undefined, 'd']
   }
 
+  // recursively call the function for all of our possible moves
   let results = []
   for(let move of moves){
     let nextState = cloneBoard(state)
     nextState[move.x][move.y] = currentPlayer
-    
-    results.push([move, treeSearchAI(nextState, other(currentPlayer), depth + 1)[1]])
+    let [_, outcomeForOpponent] = treeSearchAI(nextState, other(currentPlayer), depth + 1)
+    results.push([move, outcomeForOpponent])
   }
 
+  //Case 1: one of our moves makes the opponent lose, so we select it and are winning.
   for(let x of results){
-    let [move, res] = x
-    if(res == 'l')
+    let [move, outcome] = x
+    if(outcome == 'l')
       return [move, 'w']
   }
 
+  //Case 2: one of our moves forces a draw and we are not in Case 1.
   for(let x of results){
-    let [move, res] = x
-    if(res == 'd')
+    let [move, outcome] = x
+    if(outcome == 'd')
       return [move, 'd']
   }
 
+  //Case 3: we are not in case 1 or 2 so we just pick a random losing move.
   let [move, _] = results[0]
   return [move, 'l']
 }
