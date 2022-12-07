@@ -51,7 +51,7 @@ function processHumanCoordinate(input) {
     }
 
     let coordinates = extractCoordinates(input);
-
+    
     if(coordinates.x < 0 || coordinates.x > 2 || coordinates.y < 0 || coordinates.y > 2){
       displayMessage("Invalid coordinate entered");
       valid=false;
@@ -86,6 +86,7 @@ function processAICoordinate() {
   } else {
     currentPlayer = "pets";
   }
+    console.log(board)
 
   if(currentPlayer == "pets"|| currentPlayer=="diamond"){
     let coordinates
@@ -177,20 +178,25 @@ for (let i = 0; i < 3; i++)
     if (board[i][j] == "")
       return {x: i, y: j}
 }
-
+function cloneBoard(state){
+  let clone = []
+  for (let i = 0; i < 3; i++){
+    clone[i] = []
+    for (let j = 0; j < 3; j++)
+      clone[i][j] = state[i][j]
+  }
+  return clone
+}
 function winMove(state,current,opposite,root,turn)
 {
   for (let i = 0; i < 3; i++)
   for (let j = 0; j < 3; j++){
-    if(state[i][j]==""){
-      let clone=[]
-      for (let i = 0; i < 3; i++)
-      for (let j = 0; j < 3; j++){
-        clone[i][j]=state[i][j]
-      }
+    if(state[i][j]===''){
+      clone=cloneBoard(state)
+      console.log(clone);
       clone[i][j]=current
       const winningPlayer = getWinningPlayer(clone);
-      if(winningPlayer){
+      if(winningPlayer==current){
         if(turn){
           return {x:i,y:j}
         } else {
@@ -199,15 +205,16 @@ function winMove(state,current,opposite,root,turn)
       }
       else{
         next=winMove(clone,opposite,current,root+1,!turn)
+        console.log(root)
         if(next!=undefined) return {x:i,y:j}
         else if(root>0){
           return undefined
-        } else return {x:i,y:i}
+        }
       }
 
     }
   }
-  return undefined
+  return {x:i,y:j}
 }
 
 function secondAi(){
@@ -217,7 +224,8 @@ if(gameTurn%2==1) {
 }else {
   X="diamond"; O="pets"
 }
-return winMove(board,X,O,0,false)
+let board1=cloneBoard(board)
+return winMove(board1,X,O,0,true)
 }
 
 function handleMove(coordinates, currentPlayer){
@@ -263,9 +271,8 @@ function extractCoordinates(input) {
 
 // this function should return `X` or `O` or undefined (carefull it's not a string )
 // based on interpreting the values in the board variable
-function getWinningPlayer(board) {
+function getWinningPlayer(board2) {
   let checkThese = []
-
     for(let i = 0; i <= 2; ++i){
         let row = []
         let col = []
@@ -280,21 +287,21 @@ function getWinningPlayer(board) {
     checkThese.push([[0,2], [1,1], [2,0]])
 
     for(let line of checkThese){
-        if(rowWinner(line) != undefined){
-            return rowWinner(line)
+        if(rowWinner(line,board2) != undefined){
+            return rowWinner(line,board2)
         }
     }
 
     return undefined
 }
 //returns the winner of a length 3 array of coordinates, and returns undefined if no winner exists
-function rowWinner(line){
-    line = line.map(cell => board[cell[0]][cell[1]])
+function rowWinner(line,board2){
+    line = line.map(cell => board2[cell[0]][cell[1]])
     if(line[0] == line[1] && line[0] == line[2]){
         if(line[0] == 'diamond')
-            return 'X'
+            return 'diamond'
         else if(line[0] == 'pets')
-            return 'O'
+            return 'pets'
     }
     return undefined
 }
