@@ -193,24 +193,37 @@ let a=3,b=3
 let d=1
 function winMove(state,current,opposite,root)
 { let rezults=[]
-  
   for (let i = 0; i < 3; i++)
   for (let j = 0; j < 3; j++){
     if(state[i][j]===''){
       clone=cloneBoard(state)
       clone[i][j]=current
       const winningPlayer = getWinningPlayer(clone);
+      console.log(winningPlayer)
       if(winningPlayer==current){
-      rezults.push([{x:i,y:j},"w"])
-      }
-      else {
+       if (root%2==0)rezults.push([{x:i,y:j},"w"])
+       rezults.push([{x:i,y:j},"l"])
+      }else if(root==9){
+        return [{x:i,y:j},"d"]
+      }else {
         rezults.push(winMove(clone,opposite,current,root+1))
       }
     }
   }
-  for(let rez of rezults)
-
- return undefined
+  // for(let rez of rezults){
+  //  let [a,b]=rez
+  //   if(b=="w") return [a,b]
+  // }
+  for(let x of rezults){
+    let [move, outcome] = x
+    if(outcome == 'w')
+      return [move, 'w']  
+  }
+  for(let rez of rezults){  
+   let [a,b]=rez
+    if(b=="d") return [a,b]
+  }
+  return[{x:2,y:2},"l"]
 }
 
 function secondAi(){
@@ -221,8 +234,7 @@ if(gameTurn%2==1) {
   X="diamond"; O="pets"
 }
 let board1=cloneBoard(board)
-d=1
-return winMove(board1,X,O,0,true)
+return winMove(board1,X,O,1,true)[0]
 }
 
 function handleMove(coordinates, currentPlayer){
