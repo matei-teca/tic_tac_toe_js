@@ -187,11 +187,19 @@ function cloneBoard(state){
   }
   return clone
 }
+
+let win=0
+let a=3,b=3
+let d=1
 function winMove(state,current,opposite,root,turn)
-{let a,b;
+{ let isd=false
+  
   for (let i = 0; i < 3; i++)
   for (let j = 0; j < 3; j++){
     if(state[i][j]===''){
+      if(root==0 && isd== false){
+        a=i;b=j;
+      }
       clone=cloneBoard(state)
       console.log(clone);
       clone[i][j]=current
@@ -200,25 +208,29 @@ function winMove(state,current,opposite,root,turn)
         if(turn){
           return {x:i,y:j}
         } else {
+          if(root==1){
+            d=0
+            return {x:i,y:j}
+          } 
           return undefined
         }
       }
       else if(winningPlayer==undefined){
         next=winMove(clone,opposite,current,root+1,!turn)
-        console.log(root)
-        if(next!=undefined) return {x:i,y:j}
+        if(d==0) return next
+        if(next!=undefined){
+          return {x:i,y:j}
+        } 
         else if(root>0){
           return undefined
         }
-      }else if(winningPlayer==opposite){
-        if(turn){
-          return {x:i,y:j}
-        }
       }
-    a=i;b=j;
+    
     }
+    isd=true
   }
-  return {x:a,y:b}
+  if(root==0) return{x:a,y:b}
+ return undefined
 }
 
 function secondAi(){
@@ -229,6 +241,7 @@ if(gameTurn%2==1) {
   X="diamond"; O="pets"
 }
 let board1=cloneBoard(board)
+d=1
 return winMove(board1,X,O,0,true)
 }
 
