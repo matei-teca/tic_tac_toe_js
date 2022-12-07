@@ -50,6 +50,7 @@ function processHumanCoordinate(input) {
     } 
     else {
       handleMove(coordinates, currentPlayer)
+      console.log(`Best result attainable for ${other(currentPlayer)}:`, treeSearchAI(board, other(currentPlayer), 0))
     }
     if(!isPlayerYHuman){
       setHTMLvisibilityForInputHumanCoordinates(false);
@@ -71,7 +72,7 @@ function processAICoordinate() {
   }
 
   if(currentPlayer == "pets"){
-    let coordinates = basicAI()
+    let coordinates = basicAI(currentPlayer)[0]
 
     if(coordinates.x < 0 || coordinates.x > 2 || coordinates.y < 0 || coordinates.y > 2){
       displayMessage("Invalid coordinate entered");
@@ -92,12 +93,70 @@ function processAICoordinate() {
   }
 }
 
+let verbose = true
 // Trivial strategy. AI fills the first free cell.
-function basicAI(){
+function basicAI(currentPlayer){
+  return treeSearchAI(board, currentPlayer, 0)
+}
+
+//returns [the best move, outcome for current player] as a 2-array
+function treeSearchAI(state, currentPlayer, depth){
+  let winningPlayer = getWinningPlayer(state);
+  if (winningPlayer) {
+    winningPlayer = (winningPlayer == 'X' ? 'diamond' : 'pets')
+    return [undefined, winningPlayer == currentPlayer ? 'w' : 'l']
+  }
+
+  let moves = legalMoves(state)
+  if(moves.length == 0){
+    return [undefined, 'd']
+  }
+
+  let results = []
+  for(let move of moves){
+    let nextState = cloneBoard(state)
+    nextState[move.x][move.y] = currentPlayer
+    
+    results.push([move, treeSearchAI(nextState, other(currentPlayer), depth + 1)[1]])
+  }
+
+  for(let x of results){
+    let [move, res] = x
+    if(res == 'l')
+      return [move, 'w']
+  }
+
+  for(let x of results){
+    let [move, res] = x
+    if(res == 'd')
+      return [move, 'd']
+  }
+
+  let [move, _] = results[0]
+  return [move, 'l']
+}
+
+function legalMoves(state){
+  let moves = []
   for (let i = 0; i < 3; i++)
     for (let j = 0; j < 3; j++)
-      if (board[i][j] == "")
-        return {x: i, y: j}
+      if (state[i][j] == "")
+        moves.push({x: i, y: j})
+  return moves
+}
+
+function cloneBoard(state){
+  let clone = []
+  for (let i = 0; i < 3; i++){
+    clone[i] = []
+    for (let j = 0; j < 3; j++)
+      clone[i][j] = state[i][j]
+  }
+  return clone
+}
+
+function other(player){
+  return player == 'diamond' ? 'pets' : 'diamond'
 }
 
 function handleMove(coordinates, currentPlayer){
@@ -143,7 +202,7 @@ function extractCoordinates(input) {
 
 // this function should return `X` or `O` or undefined (carefull it's not a string )
 // based on interpreting the values in the board variable
-function getWinningPlayer(board) {
+function getWinningPlayer(state) {
     let checkThese = []
 
     for(let i = 0; i <= 2; ++i){
@@ -160,8 +219,8 @@ function getWinningPlayer(board) {
     checkThese.push([[0,2], [1,1], [2,0]])
 
     for(let line of checkThese){
-        if(rowWinner(line) != undefined){
-            return rowWinner(line)
+        if(rowWinner(line, state) != undefined){
+            return rowWinner(line, state)
         }
     }
 
@@ -169,8 +228,8 @@ function getWinningPlayer(board) {
 }
 
 //returns the winner of a length 3 array of coordinates, and returns undefined if no winner exists
-function rowWinner(line){
-    line = line.map(cell => board[cell[0]][cell[1]])
+function rowWinner(line, state){
+    line = line.map(cell => state[cell[0]][cell[1]])
     if(line[0] == line[1] && line[0] == line[2]){
         if(line[0] == 'diamond')
             return 'X'
