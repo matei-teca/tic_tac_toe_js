@@ -93,7 +93,7 @@ function processAICoordinate() {
       coordinates={x:Math.floor(Math.random()*3), y:Math.floor(Math.random()*3)}
     }
     else{
-      coordinates= basicAI()
+      coordinates= secondAi()
     }
       handleMove(coordinates, currentPlayer)
   }
@@ -176,6 +176,48 @@ for (let i = 0; i < 3; i++)
   for (let j = 0; j < 3; j++)
     if (board[i][j] == "")
       return {x: i, y: j}
+}
+
+function winMove(state,current,opposite,root,turn)
+{
+  for (let i = 0; i < 3; i++)
+  for (let j = 0; j < 3; j++){
+    if(state[i][j]==""){
+      let clone=[]
+      for (let i = 0; i < 3; i++)
+      for (let j = 0; j < 3; j++){
+        clone[i][j]=state[i][j]
+      }
+      clone[i][j]=current
+      const winningPlayer = getWinningPlayer(clone);
+      if(winningPlayer){
+        if(turn){
+          return {x:i,y:j}
+        } else {
+          return undefined
+        }
+      }
+      else{
+        next=winMove(clone,opposite,current,root+1,!turn)
+        if(next!=undefined) return {x:i,y:j}
+        else if(root>0){
+          return undefined
+        } else return {x:i,y:i}
+      }
+
+    }
+  }
+  return undefined
+}
+
+function secondAi(){
+  let X,O;
+if(gameTurn%2==1) {
+  X="pets"; O="diamond"
+}else {
+  X="diamond"; O="pets"
+}
+return winMove(board,X,O,0,false)
 }
 
 function handleMove(coordinates, currentPlayer){
