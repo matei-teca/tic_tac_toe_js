@@ -188,7 +188,7 @@ function cloneBoard(state){
   return clone
 }
 function winMove(state,current,opposite,root,turn)
-{
+{let a,b;
   for (let i = 0; i < 3; i++)
   for (let j = 0; j < 3; j++){
     if(state[i][j]===''){
@@ -203,18 +203,22 @@ function winMove(state,current,opposite,root,turn)
           return undefined
         }
       }
-      else{
+      else if(winningPlayer==undefined){
         next=winMove(clone,opposite,current,root+1,!turn)
         console.log(root)
         if(next!=undefined) return {x:i,y:j}
         else if(root>0){
           return undefined
         }
+      }else if(winningPlayer==opposite){
+        if(turn){
+          return {x:i,y:j}
+        }
       }
-
+    a=i;b=j;
     }
   }
-  return {x:i,y:j}
+  return {x:a,y:b}
 }
 
 function secondAi(){
