@@ -35,7 +35,7 @@ function setGameMode(selectedValue) {
   }
   resetBoard();
 
-  displayMessage("Player X's turn");
+  displayMessage("Player diamond's turn");
 }
 
 // this function is called whenever the user presses the `enter`
@@ -62,12 +62,10 @@ function processHumanCoordinate(input) {
     } 
     else {
       handleMove(coordinates, currentPlayer)
+      console.log(`Best result attainable for ${other(currentPlayer)}:`, treeSearchAI(board, other(currentPlayer), 0))
     }
-    if(!valid){
-      if (e.key === 'Enter') {
-    return processHumanCoordinate(e.target.value);
-    }
-    }
+    
+    
     if(!isPlayerYHuman){
       setHTMLvisibilityForInputHumanCoordinates(false);
       setHTMLvisibilityForInputAiCoordinatesInput(true);
@@ -86,19 +84,10 @@ function processAICoordinate() {
   } else {
     currentPlayer = "pets";
   }
-    console.log(board)
+  
+  let coordinates= basicAI(currentPlayer)
+  handleMove(coordinates, currentPlayer)
 
-  if(currentPlayer == "pets"|| currentPlayer=="diamond"){
-    let coordinates
-    if(gameTurn==0 && Aimode==1){
-      coordinates={x:Math.floor(Math.random()*3), y:Math.floor(Math.random()*3)}
-    }
-    else{
-      coordinates= secondAi()
-      console.log(a,b)
-    }
-      handleMove(coordinates, currentPlayer)
-  }
   
 if(Aimode==0){
   setHTMLvisibilityForInputHumanCoordinates(true);
@@ -110,20 +99,79 @@ if(Aimode==0){
   }
 }
 
+let verbose = true
 // Trivial strategy. AI fills the first free cell.
-let checkThese1=[]
-for(let i = 0; i <= 2; ++i){
-  let row = []
-  let col = []
-  for(let j = 0; j <= 2; ++j){
-      row.push([i, j])
-      col.push([j, i])
-  }
-  checkThese1.push(row)
-  checkThese1.push(col)
+function basicAI(currentPlayer){
+  return treeSearchAI(board, currentPlayer, 0)[0]
 }
-checkThese1.push([[0,0], [1,1], [2,2]])
-checkThese1.push([[0,2], [1,1], [2,0]])
+
+//input: state - a board configuration
+//       currentPlayer - the player to move
+//   
+//output: returns [the best move, if relevant, outcome for current player] as a 2-array
+function treeSearchAI(state, currentPlayer, depth){
+  let winningPlayer = getWinningPlayer(state);
+  // a winner was found
+  if (winningPlayer != undefined) { 
+    return [undefined, winningPlayer == currentPlayer ? 'w' : 'l'] 
+  }
+
+  // if there is no winner and no moves, it is a draw
+  let moves = legalMoves(state)
+  if(moves.length == 0){ 
+    return [undefined, 'd']
+  }
+
+  // recursively call the function for all of our possible moves
+  let results = []
+  for(let move of moves){
+    let nextState = cloneBoard(state)
+    nextState[move.x][move.y] = currentPlayer
+    let [_, outcomeForOpponent] = treeSearchAI(nextState, other(currentPlayer), depth + 1)
+    results.push([move, outcomeForOpponent])
+  }
+
+  //Case 1: one of our moves makes the opponent lose, so we select it and are winning.
+  for(let x of results){
+    let [move, outcome] = x
+    if(outcome == 'l')
+      return [move, 'w']
+  }
+
+  //Case 2: one of our moves forces a draw and we are not in Case 1.
+  for(let x of results){
+    let [move, outcome] = x
+    if(outcome == 'd')
+      return [move, 'd']
+  }
+
+  //Case 3: we are not in case 1 or 2 so we just pick a random losing move.
+  let [move, _] = results[0]
+  return [move, 'l']
+}
+
+function legalMoves(state){
+  let moves = []
+  for (let i = 0; i < 3; i++)
+    for (let j = 0; j < 3; j++)
+      if (state[i][j] == "")
+        moves.push({x: i, y: j})
+  return moves
+}
+
+function cloneBoard(state){
+  let clone = []
+  for (let i = 0; i < 3; i++){
+    clone[i] = []
+    for (let j = 0; j < 3; j++)
+      clone[i][j] = state[i][j]
+  }
+  return clone
+}
+
+function other(player){
+  return player == 'diamond' ? 'pets' : 'diamond'
+}
 
 
 
@@ -170,8 +218,9 @@ function extractCoordinates(input) {
 
 // this function should return `X` or `O` or undefined (carefull it's not a string )
 // based on interpreting the values in the board variable
-function getWinningPlayer(board2) {
-  let checkThese = []
+function getWinningPlayer(state) {
+    let checkThese = []
+
     for(let i = 0; i <= 2; ++i){
         let row = []
         let col = []
@@ -186,16 +235,16 @@ function getWinningPlayer(board2) {
     checkThese.push([[0,2], [1,1], [2,0]])
 
     for(let line of checkThese){
-        if(rowWinner(line,board2) != undefined){
-            return rowWinner(line,board2)
+        if(rowWinner(line, state) != undefined){
+            return rowWinner(line, state)
         }
     }
 
     return undefined
 }
 //returns the winner of a length 3 array of coordinates, and returns undefined if no winner exists
-function rowWinner(line,board2){
-    line = line.map(cell => board2[cell[0]][cell[1]])
+function rowWinner(line, state){
+    line = line.map(cell => state[cell[0]][cell[1]])
     if(line[0] == line[1] && line[0] == line[2]){
         if(line[0] == 'diamond')
             return 'diamond'
