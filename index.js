@@ -187,10 +187,6 @@ function cloneBoard(state){
   }
   return clone
 }
-
-let win=0
-let a=3,b=3
-let d=1
 function winMove(state,current,opposite,root)
 { let rezults=[]
   for (let i = 0; i < 3; i++)
@@ -201,12 +197,13 @@ function winMove(state,current,opposite,root)
       const winningPlayer = getWinningPlayer(clone);
       console.log(winningPlayer)
       if(winningPlayer==current){
-       if (root%2==0)rezults.push([{x:i,y:j},"w"])
-       rezults.push([{x:i,y:j},"l"])
+      rezults.push([{x:i,y:j},"w"])
       }else if(root==9){
         return [{x:i,y:j},"d"]
       }else {
-        rezults.push(winMove(clone,opposite,current,root+1))
+       let x=winMove(clone,opposite,current,root+1);
+       x[1]="l";
+        rezults.push(x);
       }
     }
   }
@@ -217,13 +214,16 @@ function winMove(state,current,opposite,root)
   for(let x of rezults){
     let [move, outcome] = x
     if(outcome == 'w')
-      return [move, 'w']  
+      return [move, 'l']  
   }
   for(let rez of rezults){  
    let [a,b]=rez
     if(b=="d") return [a,b]
   }
-  return[{x:2,y:2},"l"]
+  for(let rez of rezults){  
+    let [a,b]=rez
+    return [a,"w"]
+   }
 }
 
 function secondAi(){
