@@ -95,6 +95,7 @@ function processAICoordinate() {
     }
     else{
       coordinates= secondAi()
+      console.log(a,b)
     }
       handleMove(coordinates, currentPlayer)
   }
@@ -187,43 +188,59 @@ function cloneBoard(state){
   }
   return clone
 }
+let a=2,b=2
 function winMove(state,current,opposite,root)
-{ let rezults=[]
+{ let rezults1=[]
+  let rezults2=[]
   for (let i = 0; i < 3; i++)
   for (let j = 0; j < 3; j++){
     if(state[i][j]===''){
       clone=cloneBoard(state)
       clone[i][j]=current
       const winningPlayer = getWinningPlayer(clone);
-      console.log(winningPlayer)
+
       if(winningPlayer==current){
-      rezults.push([{x:i,y:j},"w"])
-      }else if(root==9){
-        return [{x:i,y:j},"d"]
+      rezults1.push([{x:i,y:j},"w"])
+      }else if(root===8){
+        let x=[{x:i,y:j},"d"]
+        return x
+        console.log(x)
       }else {
-       let x=winMove(clone,opposite,current,root+1);
-       x[1]="l";
-        rezults.push(x);
+        rezults2.push(winMove(clone,opposite,current,root+1));
       }
+      a=i 
+      b=j
     }
   }
   // for(let rez of rezults){
   //  let [a,b]=rez
   //   if(b=="w") return [a,b]
   // }
-  for(let x of rezults){
-    let [move, outcome] = x
-    if(outcome == 'w')
-      return [move, 'l']  
+
+  for (let rez of rezults1) {
+
+    for(let x of rez)
+    if(x==="w") return rez
   }
-  for(let rez of rezults){  
-   let [a,b]=rez
-    if(b=="d") return [a,b]
+ 
+  for (let rez of rezults2) {
+
+    for(let x of rez)
+    if(x==="w") return rez
   }
-  for(let rez of rezults){  
-    let [a,b]=rez
-    return [a,"w"]
+
+  for(let rez of rezults1){ 
+
+    for(let x of rez)
+    if(x==="d") return rez
+  }
+
+  for(let rez of rezults2){  
+
+    for(let x of rez)
+    if(x === "d") return rez
    }
+   return rezults1[0]
 }
 
 function secondAi(){
